@@ -35,13 +35,9 @@ tree, in which case we also set cell new to FIRE. Otherwise the state will remai
 c. Finally, if the old state of cell (i, j) is FIRE, then the latter will die and the new state
 becomes ASHES.
 
-
 <p align="center">
   <img src="https://github.com/fabian-kutschera/Wildfire/blob/main/wildfire_example.png" alt="Example output"/>
 </p>
-
-
-![Example Output](./wildfire_example.png)
 
 ### Tasks
 
@@ -49,4 +45,4 @@ becomes ASHES.
 - Your primary task is to complete the implementation of wildfire.c. The places where code is missing are marked by /* YOUR CODE HERE */ comments.
 - Inside the code we are using two playing fields, one to hold the current state of our forest, and an auxilliary one for performing the update step. Once we have computed the new states for all cells by calling updateForest(), we need to somehow transfer these cell states from the aux variable into the forest variable. Try to come up with an efficient way for doing this.
 - Hint: To test your implementation run a simulation with γ = 0, what should happen?
-- Perform some simulations, e.g. by chosing α from {0.01, 0.02, 0.1, 0.2} and γ from {5 · 10−6, 5 · 10−5, 1 · 10−4, 5 · 10−3}. Are there observable differences? Does the size N of the playing field have a significant influenc
+- Perform some simulations, e.g. by chosing α from {0.01, 0.02, 0.1, 0.2} and γ from {5 · 10−6, 5 · 10−5, 1 · 10−4, 5 · 10−3}. Are there observable differences? Does the size N of the playing field have a significant influence?
