@@ -1,5 +1,5 @@
 # Wildfire
-## Cellular automaton to perform a simple wildfire simulation in C.
+## [Cellular automaton to perform a simple wildfire simulation in C](https://en.wikipedia.org/wiki/Forest-fire_model)
 
 In this assigment we are going to implement a cellular automaton to perform a simple wild-
 fire simulation. A cellular automaton is a (relatively) simple approach to model and simulate
@@ -34,6 +34,8 @@ cell new to FIRE. If this is not the case, then with a probability γ lightning 
 tree, in which case we also set cell new to FIRE. Otherwise the state will remain TREE.
 c. Finally, if the old state of cell (i, j) is FIRE, then the latter will die and the new state
 becomes ASHES.
+
+![Example Output](./wildfire_example.png)
 
 ### Tasks
 
