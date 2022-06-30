@@ -35,6 +35,12 @@ tree, in which case we also set cell new to FIRE. Otherwise the state will remai
 c. Finally, if the old state of cell (i, j) is FIRE, then the latter will die and the new state
 becomes ASHES.
 
+
+<p align="center">
+  <img src="https://github.com/fabian-kutschera/Wildfire/blob/main/wildfire_example.png" alt="Example output"/>
+</p>
+
+
 ![Example Output](./wildfire_example.png)
 
 ### Tasks
