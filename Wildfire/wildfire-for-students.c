@@ -7,6 +7,7 @@
 void printHeader() {
   printf( " ------------------\n" );
   printf( "  PROJECT WILDFIRE\n" );
+  printf( "  This code was developed at LMU Munich\n" );
   printf( " ------------------\n" );
 }
 
@@ -47,11 +48,11 @@ bool rollDice( double luckyValue ) {
 
 // Initialise the 2D simulation domain by setting all cells to ASHES
 void initForest( forest_t* forest ){
-  //forest->cells[forest->size][forest->size] = {ASHES}; //Why can't I use sth like this?
+  // the alternative is to use directly calloc()
   for( int k = 0; k < forest->size; k++)
     for(int m = 0; m < forest->size; m++)
       forest->cells[k][m] = ASHES;
-  /* YOUR CODE HERE - DONE? */
+  /* YOUR CODE HERE - DONE */
 }
 
 // Export the state of the simulation at given step into the given file
@@ -70,10 +71,9 @@ void exportForest( FILE* outfile, forest_t* forest, int step ) {
 // alpha (tree growth) and gamma (lighting strike)
 void updateForest( forest_t* forestOld, forest_t* forestNew, double alpha,
                   double gamma ) {
-  // I think we need if statements
-  // I think we need rolldice()
-  /* YOUR CODE HERE - it's probably really inefficient but it works*/
-  for( int k = 1; k < forestOld->size-1; k++) {
+  // the alternative is to use switch case
+  /* YOUR CODE HERE - DONE */
+  /*for( int k = 1; k < forestOld->size-1; k++) {
     for(int m = 1; m < forestOld->size-1; m++) {
       if (forestOld->cells[k][m] == ASHES) {
 	if (rollDice(alpha)) {
@@ -82,7 +82,6 @@ void updateForest( forest_t* forestOld, forest_t* forestNew, double alpha,
 	//else forestNew->cells[k][m] = ASHES;
       }
       else if (forestOld->cells[k][m] == TREE) {
-	//if ((k>0 && m>0) && (k<forestOld->size && m<forestOld->size)) 
 	if (forestOld->cells[k+1][m]==FIRE || forestOld->cells[k-1][m]==FIRE || forestOld->cells[k][m+1]==FIRE || forestOld->cells[k][m-1]==FIRE) {
 	  forestNew->cells[k][m] = FIRE;
 	}
@@ -95,7 +94,36 @@ void updateForest( forest_t* forestOld, forest_t* forestNew, double alpha,
 	{forestNew->cells[k][m] = ASHES;}
     }
   }
+  } */
+  cell_t** cellsOld = forestOld->cells;
+  cell_t** cellsNew = forestNew->cells;
+  int upperLimit = forestOld->size-1;
+
+  for( int k = 1; k < upperLimit; k++ ) {
+    for( int m = 1; m < upperLimit; m++ ) {
+      switch( cellsOld[k][m] ) {
+      case ASHES:
+        cellsNew[k][m] = rollDice( alpha ) ? TREE : ASHES;
+        break;
+      case TREE:
+        if( cellsOld[k-1][m] == FIRE || 
+            cellsOld[k+1][m] == FIRE ||
+            cellsOld[k][m-1] == FIRE ||
+            cellsOld[k][m+1] == FIRE ) {
+          cellsNew[k][m] = FIRE;
+        }
+        else {
+          cellsNew[k][m] = rollDice( gamma ) ? FIRE : TREE;
+        }
+        break;
+      case FIRE:
+        cellsNew[k][m] = ASHES;
+        break;
+      }
+    }
+  }
 }
+  
 
 
 // Dynamically allocate memory for the cells of the 2D simulation domain
@@ -123,10 +151,12 @@ cell_t** allocCells( int size ) {
 // Free dynamically allocate memory for the cells of the 2D simulation domain
 // and re-set forest data structure to empty
 void freeCells( forest_t* forest ) {
-  free(forest);
-  /* I think the freeing is not done properly - execution returns "munmap_chunk(): invalid pointer",
-     but running the python script works fine */
-  /* YOUR CODE HERE - DONE?*/
+  // be careful when freeing memory
+  free( forest->cells[0] );
+  free( forest->cells );
+  forest->cells = NULL;
+  forest->size = 0;
+  /* YOUR CODE HERE - DONE ?*/
 }
 
 // Driver routine
@@ -184,9 +214,16 @@ int main( int argc, char* argv[] ) {
     updateForest( &forest, &aux, alpha, gamma );
 
     // update cell states in forest from that in aux
-    /* YOUR CODE HERE */
-    //forest = aux;
-    memcpy(&forest, &aux, sizeof(forest));
+    /* YOUR CODE HERE - DONE */
+    /* Attention, the following would result in an error
+       memcpy(&forest, &aux, sizeof(forest));
+       free(): double free detected in tcache 2
+       Aborted */
+    // Instead: swap pointers inside the forests
+    cell_t** tmp = forest.cells;
+    forest.cells = aux.cells;
+    aux.cells = tmp;
+
     
     // export the new state
     exportForest( of, &forest, k );
